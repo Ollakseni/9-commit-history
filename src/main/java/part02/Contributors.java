@@ -1,7 +1,10 @@
 package part02;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.List;
 
 public class Contributors {
 
@@ -24,7 +27,23 @@ public class Contributors {
     public Collection<String> getContributors(String commitLog) {
         // Like in the previous exercise, you need to return an instance of some class
         // that implements the Collection interface. The choice is yours.
-        return null;
+        List<String> contributors = new ArrayList<>();
+        if (commitLog == null || commitLog.isEmpty()) {
+            return contributors;
+        }
+
+        for (String line : commitLog.split("\\R")) {
+            String[] parts = line.trim().split("\\s+");
+            if (parts.length >= 4 && parts[0].equals("Commit")
+                    && parts[2].equalsIgnoreCase("by")) {
+                String contributor = parts[3].replaceAll("[,;:]", "");
+                if (!contributor.isEmpty() && !contributors.contains(contributor)) {
+                    contributors.add(contributor);
+                }
+            }
+        }
+
+        return contributors;
     }
 
     /**
