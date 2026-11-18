@@ -2,8 +2,8 @@ package part02;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.List;
 
 public class Contributors {
@@ -67,6 +67,25 @@ public class Contributors {
      * @return a map containing the commit ids grouped by contributor
      */
     public Map<String, Collection<String>> groupCommitIdsByContributors(String commitLog) {
-        return null;
+
+        Map<String, Collection<String>> contributions = new HashMap<>();
+        if (commitLog == null || commitLog.isEmpty()) {
+            return contributions;
+        }
+
+        for (String line : commitLog.split("\\R")) {
+            String[] parts = line.trim().split("\\s+");
+            if (parts.length >= 4 && parts[0].equals("Commit")
+                    && parts[2].equalsIgnoreCase("by")) {
+                String commitId = parts[1];
+                String contributor = parts[3].replaceAll("[,;:]", "");
+                if (!commitId.isEmpty() && !contributor.isEmpty()) {
+                    contributions.computeIfAbsent(contributor, key -> new ArrayList<>())
+                            .add(commitId);
+                }
+            }
+        }
+
+        return contributions;
     }
 }
